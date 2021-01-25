@@ -13,15 +13,16 @@ class AddDeck extends Component {
         this.props.dispatch(handleAddDeck(this.state.title));
     };
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.createdDeckId !== this.props.createdDeckId) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.createdDeckId !== this.props.createdDeckId) {
             let title = this.state.title;
             this.setState({title: ""}, () => this.props.navigation.navigate(
                 'DeckDetail',
-                {id: nextProps.createdDeckId, title: title}
+                {id: this.props.createdDeckId, title: title}
             ));
         }
     }
+
 
     render() {
         let disabled = this.state.title === "";

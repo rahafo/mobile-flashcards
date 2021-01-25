@@ -6,11 +6,13 @@ import { connect } from "react-redux";
 
 class DeckDetails extends Component {
 
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.deck) {
+
+    componentDidUpdate() {
+        if (!this.props.deck) {
             this.props.navigation.goBack();
         }
     }
+
 
     render() {
         const {deck,navigation} = this.props;
