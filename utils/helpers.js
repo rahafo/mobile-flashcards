@@ -1,6 +1,6 @@
 import React from 'react'
 import {AsyncStorage } from 'react-native'
-import * as Notifications from "expo-notifications";
+import { Notifications } from 'expo';
 import * as Permissions from "expo-permissions";
 
 const NOTIFICATION_KEY = 'flashCards:notifications'
@@ -30,8 +30,8 @@ export function clearLocalNotification () {
 
 function createNotification () {
     return {
-        title: 'Study Remainder!!',
-        body: "Don't forget to study today today!",
+        title: 'Study Remainder!',
+        body: "Don't forget to study today!",
         ios: {
             sound: true,
         },
@@ -54,14 +54,15 @@ export function setLocalNotification () {
                         if (status === 'granted') {
                             Notifications.cancelAllScheduledNotificationsAsync()
 
-                            Notifications.scheduleNotificationAsync({
-                                content: createNotification(),
-                                    trigger: {
-                                        hour: 22,
-                                        minute: 0,
-                                        repeats: true,
-                                    }
-                            })
+                            let tomorrow = new Date();
+                            tomorrow.setDate(tomorrow.getDate() + 1);
+                            tomorrow.setHours(10);
+                            tomorrow.setMinutes(15);
+
+                            Notifications.scheduleLocalNotificationAsync(createNotification(),{
+                                time: tomorrow,
+                                repeat:"day"
+                            });
                             AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
                         }
                     })
