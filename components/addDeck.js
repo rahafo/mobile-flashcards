@@ -24,7 +24,7 @@ class AddDeck extends Component {
     }
 
     render() {
-        let disabled = this.state.title === ""
+        let disabled = this.state.title === "";
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>
@@ -40,10 +40,9 @@ class AddDeck extends Component {
     }
 
 
-};
+}
 
 function mapStateToProps({createdDeckId}) {
-    console.log("createdDeckId", createdDeckId.createdDeckId)
     return {
         createdDeckId: createdDeckId.createdDeckId
     };

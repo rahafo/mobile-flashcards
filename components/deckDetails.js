@@ -14,7 +14,6 @@ class DeckDetails extends Component {
 
     render() {
         const {deck,navigation} = this.props;
-        console.log("deck props", deck)
         if(deck)
         return (
             <View style={styles.details}>
@@ -34,16 +33,14 @@ class DeckDetails extends Component {
                     </TouchableOpacity>
                 </View>
             </View>
-        )
+        );
 
         return null
     }
 }
 
 function mapStateToProps ({decks}, { route, navigation }) {
-    const { id } = route.params
-    console.log("id",id)
-    console.log("decks",decks)
+    const { id } = route.params;
     return {
         deck: decks[id],
         navigation

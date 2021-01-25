@@ -31,7 +31,7 @@ class DeckList extends Component {
         }
         return (
             <View style={styles.list}>
-                <FlatList style={{flex:1, overflow:"auto"}} data={this.props.decks} renderItem={item=>this.renderItem(item)}/>
+                <FlatList style={{flex:1}} data={this.props.decks} renderItem={item=>this.renderItem(item)}/>
             </View>
         )
     }
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
         padding: 10,
         flex: 1,
         marginTop: 30,
-        height:"100%",
         alignItems: "center",
     },
 });

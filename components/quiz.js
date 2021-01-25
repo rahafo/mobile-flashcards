@@ -2,9 +2,9 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import React, {Component} from 'react'
 import {lightPurple, purple} from "../utils/colors";
 import DeckCard from "./DeckCard";
-import {FontAwesome, FontAwesome5} from '@expo/vector-icons';
+import {FontAwesome, FontAwesome5, MaterialCommunityIcons} from '@expo/vector-icons';
 import {connect} from "react-redux";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {clearLocalNotification, setLocalNotification} from "../utils/helpers";
 
 class Quiz extends Component {
     state = {
@@ -16,32 +16,38 @@ class Quiz extends Component {
     };
 
     increaseCorrectQuestions = () => {
-        this.setState({correctQuestion: this.state.correctQuestion + 1}, ()=>this.increaseAnsweredQuestions());
+        this.setState({correctQuestion: this.state.correctQuestion + 1}, () => this.increaseAnsweredQuestions());
     };
 
     increaseIncorrectQuestions = () => {
-        console.log("increaseIncorrectQuestions X", this.state.inCorrectQuestions)
-
-        this.setState({inCorrectQuestions: this.state.inCorrectQuestions + 1}, ()=>this.increaseAnsweredQuestions());
+        this.setState({inCorrectQuestions: this.state.inCorrectQuestions + 1}, () => this.increaseAnsweredQuestions());
     };
 
     increaseAnsweredQuestions = () => {
-        this.setState({answeredQuestion: this.state.answeredQuestion + 1}, () => this.setState({quizCompleted: this.state.answeredQuestion === this.props.deck.questions.length}))
+        this.setState({answeredQuestion: this.state.answeredQuestion + 1},
+            () => {
+                let quizCompleted = this.state.answeredQuestion === this.props.deck.questions.length;
+                if (quizCompleted)
+                    clearLocalNotification().then(setLocalNotification);
+                this.setState({quizCompleted: quizCompleted});
+            }
+        )
     };
 
     goToNextQuestion = () => {
         this.setState({cardIndex: this.state.cardIndex + 1})
     };
 
-    resetQuiz = ()=>{
+    resetQuiz = () => {
         this.setState({
-            answeredQuestion: 0,
-            correctQuestion: 0,
-            inCorrectQuestions: 0,
-            quizCompleted: false,
-            cardIndex: 0}
-            )
-    }
+                answeredQuestion: 0,
+                correctQuestion: 0,
+                inCorrectQuestions: 0,
+                quizCompleted: false,
+                cardIndex: 0
+            }
+        )
+    };
     renderQuiz = () => {
         const {questions} = this.props.deck;
         const {cardIndex} = this.state;
@@ -52,7 +58,7 @@ class Quiz extends Component {
                     <Text style={styles.counter}>{`Question ${cardIndex + 1} of ${questions.length}`}</Text>
                     {this.state.answeredQuestion === cardIndex ?
                         <View style={styles.buttonsContainer}>
-                            <TouchableOpacity style={styles.button}  onPress={() => this.increaseCorrectQuestions()}>
+                            <TouchableOpacity style={styles.button} onPress={() => this.increaseCorrectQuestions()}>
                                 <FontAwesome5 name="check" size={24} color={purple}/>
                                 <Text style={styles.text}>Correct</Text>
                             </TouchableOpacity>
@@ -81,25 +87,25 @@ class Quiz extends Component {
     };
 
     quizResult = () => {
-        let percentage = (this.state.correctQuestion/this.state.answeredQuestion) * 100
+        let percentage = (this.state.correctQuestion / this.state.answeredQuestion) * 100;
         return (
             <View style={styles.quiz}>
-                <MaterialCommunityIcons name="party-popper" size={150} color={purple} />
+                <MaterialCommunityIcons name="party-popper" size={150} color={purple}/>
                 <Text style={styles.resultText}>You are Done!</Text>
                 <Text style={styles.resultText}>You have answered {percentage.toFixed(1)}% correctly!</Text>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity style={styles.button}  onPress={() => this.resetQuiz()}>
-                        <MaterialCommunityIcons name="restart" size={24} color={purple} />
+                    <TouchableOpacity style={styles.button} onPress={() => this.resetQuiz()}>
+                        <MaterialCommunityIcons name="restart" size={24} color={purple}/>
                         <Text style={styles.text}>Restart</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.goBack()}>
-                        <MaterialCommunityIcons name="keyboard-backspace" size={24} color={purple} />
+                        <MaterialCommunityIcons name="keyboard-backspace" size={24} color={purple}/>
                         <Text style={styles.text}>Back</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         )
-    }
+    };
 
     render() {
         return this.state.quizCompleted ? this.quizResult() : this.renderQuiz()
@@ -107,7 +113,7 @@ class Quiz extends Component {
 }
 
 function mapStateToProps({decks}, {route, navigation}) {
-    const {deckId} = route.params
+    const {deckId} = route.params;
     return {
         deck: decks[deckId],
         navigation
@@ -144,14 +150,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 10
     },
-    resultText:{
+    resultText: {
         color: purple,
         fontSize: 20,
     },
     counter: {
         color: purple,
         fontSize: 15,
-        marginTop:10
+        marginTop: 10
     }
 
 });
